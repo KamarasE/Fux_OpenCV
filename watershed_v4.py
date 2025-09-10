@@ -10,7 +10,7 @@ Pipeline:
 3. Find droplet candidates (bright specular + high gradient).
 4. Refine droplet segmentation with watershed, constrained to the wire.
 5. Compute coverage (% of wire pixels covered by droplets).
-6. Categorize coverage into WC4–WC7.
+6. Categorize coverage into WC1–WC7.
 7. Save overlay (wire + droplet outlines + labels) and masks.
 """
 
@@ -20,7 +20,7 @@ import cv2
 import numpy as np
 
 # Input folder with images, and output folder for results
-INPUT_DIR = "/home/erik/Desktop/Fux/Fux_OpenCV/kepek/Csapvíz/Festett/20250725_112100 A"
+INPUT_DIR = "/home/erik/Desktop/Fux/Fux_OpenCV/kepek/Csapvíz/Festett/20250725_112100 A"  #Loop maybe instead? TODO
 OUTPUT_DIR = "/home/erik/Desktop/Fux/Fux_OpenCV/out/v4"
 
 
@@ -42,7 +42,7 @@ def categorize_wc(coverage_pct: float) -> str:
         return "WC6"
     if c >= 99.0:
         return "WC7"
-    return "WCx"  # placeholder for undefined band
+    return "WCx"  # placeholder for undefined band TODO
 
 
 def detect_coverage_noresize(
@@ -56,12 +56,12 @@ def detect_coverage_noresize(
     min_component_px=12,   # ignore tiny noise blobs
     surebg_dilate=7,       # expand sure background for watershed
     surefg_erode=1,        # shrink sure foreground for watershed
-    final_dilate=2         # expand droplet result to full footprint
+    final_dilate=2         # expand droplet result to full footprint                            TODO smaller? larger? idk
 ):
     # --- 1) Wire segmentation ---
     hsv = cv2.cvtColor(bgr, cv2.COLOR_BGR2HSV)
-    V = hsv[:, :, 2]
-    V_blur = cv2.GaussianBlur(V, (7, 7), 0)
+    V = hsv[:, :, 2]                                                                            #TODO other wires
+    V_blur = cv2.GaussianBlur(V, (7, 7), 0)    
 
     # Invert brightness so dark wire appears bright, then Otsu threshold
     Vin = 255 - V_blur
